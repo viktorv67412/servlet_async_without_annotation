@@ -24,9 +24,12 @@ public class UserServlet extends HttpServlet {
         executorService.submit(() -> {
             try (PrintWriter writer = asyncContext.getResponse().getWriter()) {
                 writer.print(":)");
-                asyncContext.complete();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (asyncContext != null && asyncContext.getRequest().isAsyncStarted()) {
+                    asyncContext.complete();
+                }
             }
         });
     }
